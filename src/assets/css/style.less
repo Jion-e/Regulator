@@ -1,0 +1,85 @@
+@base-color: #2472BA;
+//阴影
+.z-depth-1{box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);}
+.z-depth-2{box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);}
+.z-depth-3{box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.3);}
+.z-depth-4{box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);}
+.z-depth-5{box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.3);}
+
+//ElementUI
+//修改field自定义样式
+.add-form .self-field .mint-field-other{top:auto;left:105px;}
+.add-form .self-field .radio{margin-left: 10px;margin-right: 3px;vertical-align: sub;}
+.mint-header-button .mint-button-icon{vertical-align: text-top;}
+
+//曝光相关样式
+.exposure{
+  .line{width: 100%;height: 3px;background: #bbb}
+  .search-site{text-align: center;padding: 40px 0 30px;}
+  .search-site .search-logo img{width: 80px;}
+  .search-site .search-logo figcaption{font-size: 18px;margin-top: 10px;color: #888}
+  .search-site .go-exposure{display: inline-block;padding-bottom: 1px;color: @base-color;font-size: 16px;border-bottom: 1px solid @base-color}
+  .search-site .search-block{display: flex;justify-content: center;max-width: 90%;
+  margin:20px auto 0;}
+  .search-site .search-block .form-control{height: 40px;width: 13rem;border-top-right-radius: 0;border-bottom-right-radius: 0;}
+  .search-site .search-block .btn-radius{height: 40px;border-top-left-radius: 0;border-bottom-left-radius: 0;margin-left: 0px;margin-top: 0px;}
+
+  .list-title{padding-left: 10px;color: #888;font-size: 18px;margin:10px 0;}
+  .list-item{padding: 10px 10px;margin-bottom: 3px;box-shadow: 0 3px 3px rgba(0, 0, 0, 0.13);overflow: hidden}
+  .list-item .left{float: left}
+  .list-item .right{float: right}
+  // .list-item .cont{width:80%}
+  .list-item .cont .title{margin-bottom: 6px;}
+  .list-item .cont .time{margin-right: 5px;}
+  .list-item .img{width: 50px;}
+
+  .view{padding: 20px 10px;}
+  .view li{line-height: 2}
+  .view .card-label{display: inline-block;width: 80px;font-weight: 600;}
+  .view .card-input{display: inline-block;vertical-align: top;}
+}
+
+//投诉相关样式
+.complain{
+  .success{text-align: center;padding: 40px 0;}
+  .success-icon{width: 100px;}
+  .success-text{margin-top: 10px;font-size: 20px;}
+}
+
+//热点相关样式
+.news{
+  .tab-nav{display: flex;justify-content: space-around;padding: 20px 0;}
+  .tab-toggle{font-size: 14px;color: #666;}
+  .tab-toggle.active{color: @base-color}
+
+  .list-header{color: #888;text-align: center;margin: 10px 0;}
+  .list-item{display: flex;align-items: center;padding: 10px;overflow: hidden;}
+  .list-item .right{margin-left: 10px;}
+  .list-item .title{margin-bottom: 10px;}
+  .list-item .time,.list-item .source{color: #666;font-size: 12px;}
+  .list-item .thumbnail,
+  .list-item .thumbnail[lazy=loading] {width: 140px;height: 56px}
+  .list-item .thumbnail[lazy=loading] {background: #eee}
+
+  .search-popup{
+    width: 100%;background: rgba(0, 0, 0, 0.075);height: 100%;
+    .search-header .form-control{width: 80%;margin-right: 10px;}
+    .search-header.mint-header .mint-header-title{display: none;}
+    .search-header .mint-header-button{flex: 1}
+    .search-header .mint-header-button.is-left{width: 50px;flex: 0.05}
+
+    .recommend{overflow: hidden;padding: 20px 10px;}
+    .recommend-item{float: left;width: 33%;text-align: center;margin-bottom: 5px;}
+    .recommend-item a{display: inline-block;height: 30px;line-height: 30px;padding: 0 5px;border-radius: 25px;background: #fff;overflow: hidden;}
+  }
+  .share-popup{
+    width: 100%;padding: 10px 0;
+    .share-item{float: left;width: 25%;text-align: center;margin-top: 5px;}
+    .share-item img{width: 50px;}
+  }
+
+  .news-page{padding: 10px;}
+  .news-header{margin-bottom: 10px;}
+  .news-time,.news-source{color: #888;margin-right: 5px;}
+  .mint-button.icon-share{font-size: 1.4em;}
+}
