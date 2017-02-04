@@ -7,9 +7,10 @@
         :bottom-method="loadBottom"
         :bottom-all-loaded="allLoaded"
         ref="loadmore">
-        <div class="list-item" v-for="exposure of exposureList" @click="view(exposure.id)">
+        <div class="list-item" v-for="exposure of exposureList" @click="view(exposure.id)" v-cloak>
           <div class="cont left">
-            <h3 class="title" v-text="exposure.productName"></h3>
+            <h3 class="title">{{exposure.productName}}</h3>
+            <p class="company">制造商：{{exposure.companyName}}</p>
             <span class="time" v-text="exposure.batch"></span>
             <span class="source" v-text="exposure.accreditationBody"></span>
           </div>
@@ -25,7 +26,8 @@
 <script>
 import api from '../api'
 import { PageInit } from '../api/config'
-import { Toast } from 'mint-ui'
+import { Toast, Indicator } from 'mint-ui'
+
 export default {
   name: 'exposure-list',
   data() {
@@ -36,8 +38,13 @@ export default {
     };
   },
   created() {
+    Indicator.open({
+      text: '加载中...',
+      spinnerType: 'fading-circle'
+    })
     api.fetchExposureList(0, this.page.size).then(data => {
       this.exposureList = JSON.parse(data.data)
+      Indicator.close()
     }).catch(err => Toast(err))
   },
   methods: {
@@ -74,6 +81,6 @@ export default {
     view(id){
       this.$router.push({path: `/ExposureView/${id}`})
     }
-  },
+  }
 };
 </script>

@@ -1,9 +1,16 @@
+//开发环境
+// export const HOST = 'http://192.168.1.24:8180/regulator/'
+
+//生产环境
+export const HOST = 'http://api.chinaeid.cn/'
+
 //质量热点类
-export class newsInit{
+export class NewsInit{
   constructor(){
-    this.id = 0                           //编号
+    this.id = ""                          //编号
     this.title = ""                       //标题
-    this.type = ""                        //分类
+    this.type = ""                        //分类编号
+    this.typeName = ""                    //分类名称
     this.platform = ""                    //发布平台
     this.publishTime = ""                 //发布时间
     this.createTime = ""                  //生成时间
@@ -15,17 +22,17 @@ export class newsInit{
 }
 
 //质量曝光类
-export class exposureInit{
+export class ExposureInit{
   constructor(){
     this.id = 0                           //编号
     this.companyName = ""                 //企业名称
     this.location = ""                    //企业名称
     this.productName = ""                 //产品名称
     this.brand = ""                       //商标
-    this.product_class1 = ""              //所属行业编号
-    this.product_class1_name = ""         //所属行业名
-    this.product_class2 = ""              //细分行业编号
-    this.product_class2_name = ""         //细分行业名
+    this.productClass1 = ""               //所属行业编号
+    this.productClass1Name = ""           //所属行业名
+    this.productClass2 = ""               //细分行业编号
+    this.productClass2Name = ""           //细分行业名
     this.model = ""                       //规格型号
     this.batch = ""                       //生产日期/批号
     this.result = ""                      //抽查结果
@@ -37,22 +44,22 @@ export class exposureInit{
 }
 
 //质量投诉类
-export class complainInit{
+export class ComplainInit{
   constructor(){
-    this.id = 0                           //编号
+    this.id = ""                          //编号
     this.title = ""                       //投诉标题
     this.category = ""                    //隶属栏目编号
-    this.category_name = ""               //隶属栏目名
+    this.categoryName = ""                //隶属栏目名
     this.name = ""                        //姓名
-    this.sex = ""                         //性别
+    this.sex = 0                          //性别
     this.phone = ""                       //联系电话
     this.idcard = ""                      //身份证
     this.email = ""                       //电子邮箱
     this.address = ""                     //地区
     this.type = ""                        //投诉类型
-    this.evidenceImg = ""                 //相关证据
+    this.evidenceImg = []                 //相关证据
     this.productBrand = ""                //产品品牌
-    this.productDetail = ""               //产品型号
+    this.productDetail = ""               //投诉品牌
     this.payPrice = ""                    //购买价格
     this.payTime = ""                     //购买时间
     this.company = ""                     //生产厂家
@@ -64,11 +71,13 @@ export class complainInit{
     this.is = 0                           //是否删除
   }
 }
-//分页类
+
+//分页对象
 export class PageInit{
   constructor(){
     this.current = 1,
     this.size = 10,
+    this.sizes = [10, 20, 30, 40],
     this.total = 0
   }
 }
@@ -81,25 +90,53 @@ export const platforms = [
   {'id': 3, 'name': '星数追溯' },
 ]
 
+//新闻推荐
+export const newsCategories = [
+  {'id': 0, 'name': '全部' },
+  {'id': 1, 'name': '推荐' },
+  // {'id': 2, 'name': '热文' },
+]
+
 //新闻类型
-export const newsType = [
+// export const newsTypes = [
+//   {'id': 0, "name": '全部'},
+//   {'id': 1, "name": '食品'},
+//   {'id': 2, "name": '文玩'},
+//   {'id': 3, "name": '服饰'},
+//   {'id': 4, "name": '日用品'},
+//   {'id': 5, "name": '小商品'}
+// ]
+export const newsTypes = [
   {'id': 0, "name": '全部'},
-  {'id': 1, "name": '食品'},
-  {'id': 2, "name": '文玩'},
-  {'id': 3, "name": '服饰'},
-  {'id': 4, "name": '日用品'},
-  {'id': 5, "name": '小商品'}
+  {'id': 1, "name": '电器'},
+  {'id': 2, "name": '汽车'},
+  {'id': 3, "name": '建材'},
+  {'id': 4, "name": '数码'},
+  {'id': 5, "name": '食品'},
+  {'id': 6, "name": '医疗'},
+  {'id': 7, "name": '其他'}
 ]
 
 //新闻tab标签切换内容
+// export const newsTabs = [
+//   {'id': 0, "name": '推荐'},
+//   {'id': 1, "name": '食品'},
+//   {'id': 2, "name": '文玩'},
+//   {'id': 3, "name": '服饰'},
+//   {'id': 4, "name": '日用品'},
+//   {'id': 5, "name": '小商品'}
+// ]
 export const newsTabs = [
   {'id': 0, "name": '推荐'},
-  {'id': 1, "name": '食品'},
-  {'id': 2, "name": '文玩'},
-  {'id': 3, "name": '服饰'},
-  {'id': 4, "name": '日用品'},
-  {'id': 5, "name": '小商品'}
+  {'id': 1, "name": '电器'},
+  {'id': 2, "name": '汽车'},
+  {'id': 3, "name": '建材'},
+  {'id': 4, "name": '数码'},
+  {'id': 5, "name": '食品'},
+  {'id': 6, "name": '医疗'},
+  {'id': 7, "name": '其他'}
 ]
+
 
 //投诉类型
 export const complainType = [
@@ -109,11 +146,11 @@ export const complainType = [
   {'id': 4, 'name': '其他投诉类型'}
 ]
 
-//搜索新闻推荐
-export const newsRecommend = [
-  {"id": 0, "name": "三星note7爆炸门"},
-  {"id": 1, "name": "苏丹红事件"},
-  {"id": 2, "name": "苹果电池爆炸门"},
-  {"id": 3, "name": "三聚氰胺再度来袭"},
-  {"id": 4, "name": "江南皮革厂"},
-]
+// //搜索新闻推荐
+// export const newsRecommend = [
+//   {"id": 0, "name": "三星note7爆炸门"},
+//   {"id": 1, "name": "苏丹红事件"},
+//   {"id": 2, "name": "苹果电池爆炸门"},
+//   {"id": 3, "name": "三聚氰胺再度来袭"},
+//   {"id": 4, "name": "江南皮革厂"},
+// ]

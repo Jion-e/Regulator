@@ -1,11 +1,11 @@
 <template lang="html">
   <div class="exposure">
     <mt-header title="质量曝光详情">
-      <router-link to="/Exposure" slot="left">
+      <a href="javascript:;" slot="left" @click="back">
         <mt-button icon="back">返回</mt-button>
-      </router-link>
+      </a>
     </mt-header>
-    <div class="view">
+    <div class="view" v-finger:swipe="swipe">
       <ul>
           <!-- <li><span>编号:</span>{{exposure.id}}</li> -->
           <li>
@@ -62,13 +62,26 @@ export default {
       exposure: {}
     };
   },
-  created() {
-    const id = this.$route.params.id
-    api.fetchExposure(id).then(data => {
-      this.exposure = data
-    }).catch(err => Toast(err))
+  beforeRouteEnter(to, from, next){
+    next(vm => {
+      const id = vm.$route.params.id
+      api.fetchExposure(id).then(data => {
+        vm.exposure = data
+      }).catch(err => Toast(err))
+
+      $('.exposure').addClass('aniSlideIn')
+    })
   },
-  methods: {},
+  methods: {
+    back() {
+      window.history.back()
+    },
+    swipe(evt) {
+      if(evt.direction === 'Right'){
+        this.back()
+      }
+    }
+  },
   components: {}
 };
 </script>

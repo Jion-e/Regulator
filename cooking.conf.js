@@ -18,13 +18,13 @@ cooking.set({
   // production
   clean: true,
   hash: true,
-  sourceMap: true,
+  sourceMap: false,
   minimize: true,
   chunk: true, // see https://cookingjs.github.io/zh-cn/configuration.html#chunk
   postcss: [
-    // require('...')
+    require('autoprefixer')
   ],
-  publicPath: '/dist/',
+  publicPath: './',
   assetsPath: 'static',
   urlLoaderLimit: 10000,
   extractCSS: '[name].[contenthash:7].css',
@@ -34,9 +34,14 @@ cooking.set({
   extends: ['vue2', 'less', 'autoprefixer']
 });
 
-cooking.add('plugins.Provide', new webpack.ProvidePlugin({
-    $: 'jquery',
-    'window.jQuery': 'jquery'
-}))
+// cooking.add('plugins.Provide', new webpack.ProvidePlugin({
+//     $: 'jquery',
+//     'window.jQuery': 'jquery'
+// }));
+
+cooking.add('loader.file', {
+    test: /\.swf$/,
+    loaders: ['file?name=[path][name].[ext]']
+});
 
 module.exports = cooking.resolve();

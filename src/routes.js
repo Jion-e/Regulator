@@ -6,9 +6,10 @@ const ExposureResult = resolve => require(['./pages/exposure_result.vue'], resol
 const ExposureView = resolve => require(['./pages/exposure_view.vue'], resolve)
 const News = resolve => require(['./pages/news_index.vue'], resolve)
 const NewsView = resolve => require(['./pages/news_view.vue'], resolve)
+const NewsResult = resolve => require(['./pages/news_result.vue'], resolve)
 
 const routes = [
-  {path: '/', name: '首页', component: ComplainAdd},
+  {path: '/', name: '首页', component: News},
   {path: '/ComplainAdd', name: '质量投诉', component: ComplainAdd},
   {path: '/ComplainSuccess', name: '质量投诉成功', component: ComplainSuccess},
   {path: '/Exposure', name: '质量曝光首页', component: Exposure},
@@ -17,7 +18,8 @@ const routes = [
   {path: '/ExposureView/:id', name: '质量曝光详情', component: ExposureView},
   {path: '/News', name: '质量热点', component: News},
   {path: '/NewsView/:id', name: '新闻详情', component: NewsView},
-  {path: '*', component: ComplainAdd }
+  {path: '/NewsResult/:keyword', name: '新闻搜索结果页面', component: NewsResult},
+  // {path: '*', component: ComplainAdd }
 ]
 
 export default routes

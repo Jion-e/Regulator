@@ -24,6 +24,18 @@
       return {
       };
     },
+    beforeRouteEnter(to, from, next){
+      setTimeout(() => {
+        if(sessionStorage.exposureEmptyTop){
+          $(window).scrollTop(parseInt(sessionStorage.exposureEmptyTop))
+        }
+      }, 100)
+      next()
+    },
+    beforeRouteLeave(to, from, next){
+      sessionStorage.exposureEmptyTop = $(window).scrollTop()
+      next()
+    },
     methods: {},
     components: {ExposureList}
   };

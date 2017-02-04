@@ -22,10 +22,21 @@
 </template>
 <script>
 import api from '../api'
+import {newsTabs, newsRecommend, PageInit } from '../api/config'
 export default {
   props: ['newsList', 'type'],
   data() {
     return {
+      tabActive: 0,
+      newsTabs: newsTabs,
+      newsList: [],
+      searchPopup: false,
+      allLoaded: false,
+      isSearch: false,
+      type: 0,
+      page: new PageInit,
+      keyword: '',
+      recommend: newsRecommend,
     };
   },
   created(){

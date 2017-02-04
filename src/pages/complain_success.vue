@@ -1,12 +1,15 @@
 <template lang="html">
   <div class="complain">
     <mt-header title="质量投诉">
-      <router-link to="/" slot="left">
+      <router-link to="/ComplainAdd" slot="left">
         <mt-button icon="back">返回</mt-button>
       </router-link>
-      <router-link to="/" slot="right">
+      <a href="javascript:;" slot="right" onClick="window.Quality.closeWebView()">
+        <mt-button>完成</mt-button>
+      </a>
+      <!-- <router-link to="/" slot="right">
         <span>完成</span>
-      </router-link>
+      </router-link> -->
     </mt-header>
     <div class="success">
       <figure>

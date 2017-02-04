@@ -1,15 +1,26 @@
 <template lang="html">
   <div class="news">
     <mt-header title="质量热点">
-      <router-link to="/News" slot="left">
+      <!-- <router-link to="/News" slot="left">
         <mt-button icon="back">返回</mt-button>
-      </router-link>
+      </router-link> -->
+      <a href="javascript:;" slot="left" onClick="window.Quality.closeWebView()">
+        <mt-button icon="back">返回</mt-button>
+      </a>
       <mt-button slot="right" icon="search" @click.native="searchPopup = true"></mt-button>
     </mt-header>
     <!-- 内容页 -->
-    <div class="container" v-if="!isSearch">
+    <div class="container">
       <div class="banner">
-        <img src="../assets/img/news_bannner.png" alt="新闻推荐" class="full-img"/>
+        <mt-swipe :auto="4000">
+          <mt-swipe-item
+            class="full-bg"
+            v-for="item of bannerNews"
+            :style="{'background-image': 'url(' + item.thumbnail + ')'}"
+            @click.native="newsView(item.id)">
+              <!-- <img :src="item.thumbnail" :alt="item.title" /> -->
+          </mt-swipe-item>
+        </mt-swipe>
       </div>
       <nav class="tab-nav">
         <a class="tab-toggle"
@@ -23,35 +34,20 @@
         :bottom-method="loadBottom"
         :bottom-all-loaded="allLoaded"
         ref="loadmore">
-        <div class="list" v-for="(n, index) of 6" v-show="tabActive == index">
+        <div class="list" v-cloak v-finger:swipe="swipe">
           <div v-for="news in newsList" class="list-item" @click="newsView(news.id)">
             <div class="left">
-              <img v-lazy="news.thumbnail" slot="icon" class="thumbnail">
+              <!-- <img v-lazy="news.thumbnail" slot="icon" class="thumbnail"> -->
+              <img :src="news.thumbnail" slot="icon" class="thumbnail">
             </div>
             <div class="right">
               <h3 class="title" v-text="news.title"></h3>
-              <span class="time" v-text="news.publishTime"></span>
-              <span class="source" v-text="news.platform"></span>
+              <span class="time">{{news.publishTime | dateFormat}}</span>
+              <span class="source">{{news.platform | newsPlatformFormat}}</span>
             </div>
           </div>
         </div>
       </mt-loadmore>
-    </div>
-    <!-- 搜索页 -->
-    <div class="container" v-if="isSearch">
-      <h3 class="list-header">搜索结果</h3>
-      <div class="list" v-for="(n, index) of 6" v-show="tabActive == index">
-        <div v-for="news in newsList" class="list-item" @click="newsView(news.id)">
-          <div class="left">
-            <img v-lazy="news.thumbnail" slot="icon" class="thumbnail">
-          </div>
-          <div class="right">
-            <h3 class="title" v-text="news.title"></h3>
-            <span class="time" v-text="news.publishTime"></span>
-            <span class="source" v-text="news.platform"></span>
-          </div>
-        </div>
-      </div>
     </div>
     <mt-popup v-model="searchPopup" position="top" class="search-popup">
       <mt-header class="search-header">
@@ -62,7 +58,9 @@
         </div>
       </mt-header>
       <ul class="recommend">
-        <li class="recommend-item" v-for="item of recommend" @click="search(item.name)"><a href="javascript:;">{{item.name}}</a></li>
+        <li class="recommend-item" v-for="item of recommend" @click="search(item.name)">
+          <a href="javascript:;" @click.stop="search(item.title)">{{item.title}}</a>
+        </li>
       </ul>
     </mt-popup>
   </div>
@@ -71,32 +69,52 @@
 <script>
 import api from '../api'
 import {newsTabs, newsRecommend, PageInit } from '../api/config'
-import { Toast } from 'mint-ui'
+import { Toast, Indicator } from 'mint-ui'
+import moment from 'moment'
 export default {
   data() {
     return {
       tabActive: 0,
       newsTabs: newsTabs,
+      newsTabsLength: 8,
       newsList: [],
       searchPopup: false,
       allLoaded: false,
-      isSearch: false,
       type: 0,
       page: new PageInit,
       keyword: '',
-      recommend: newsRecommend,
+      recommend: [],
+      bannerNews: [],
+      // recommend: newsRecommend,
     };
   },
+  beforeRouteEnter(to, from, next){
+    setTimeout(() => {
+      if(sessionStorage.newsListTop){
+        $(window).scrollTop(parseInt(sessionStorage.newsListTop))
+      }
+    }, 100)
+    next()
+  },
+  beforeRouteLeave(to, from, next){
+    sessionStorage.newsListTop = $(window).scrollTop()
+    next()
+  },
+  filters: {
+    dateFormat(date){
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    }
+  },
   created() {
-    /**
-     * 分页查询新闻列表
-     * @param  {[Number]} size      [每页条数]
-     * @param  {[Number]} 0         [当前页码]
-     * @param  {[Number]} 0         [新闻分类]
-     * @return {[object]}           [新闻列表]
-     */
-    api.fetchNewsListByCategory(0, this.page.size, 0).then(data => {
+    Indicator.open({
+      text: '加载中...',
+      spinnerType: 'fading-circle'
+    })
+    api.fetchNewsListByCategory(0, this.page.size, 1).then(data => {
       this.newsList = JSON.parse(data.data)
+      this.recommend = JSON.parse(data.data).slice(0, 6)
+      this.bannerNews = JSON.parse(data.data).slice(0, 3)
+      Indicator.close()
     }).catch(err => Toast(err))
   },
   methods: {
@@ -112,14 +130,14 @@ export default {
       this.loadCurren = 0
       //推荐
       if(type === 0){
-        api.fetchNewsListByCategory(0, this.page.size, type).then(data => {
+        api.fetchNewsListByCategory(0, this.page.size, 1).then(data => {
           const list = JSON.parse(data.data)
           this.newsList = list
         }).catch(err => Toast(err))
         return false
       }
       //分类
-      api.fetchNewsListByType(0, this.page.size, type).then(data => {
+      api.fetchNewsListByType(0, this.page.size, this.type).then(data => {
         const list = JSON.parse(data.data)
         this.newsList = list
       }).catch(err => Toast(err))
@@ -132,16 +150,18 @@ export default {
     loadTop(id) {
       //推荐
       if(this.type === 0){
-        api.fetchNewsListByCategory(0, this.page.size, type).then(data => {
+        api.fetchNewsListByCategory(0, this.page.size, 1).then(data => {
           const list = JSON.parse(data.data)
           this.newsList = list
+          this.$refs.loadmore.onTopLoaded(id)
         }).catch(err => Toast(err))
         return false
       }
       //分类
-      api.fetchNewsListByType(0, this.page.size, type).then(data => {
+      api.fetchNewsListByType(0, this.page.size, this.type).then(data => {
         const list = JSON.parse(data.data)
         this.newsList = list
+        this.$refs.loadmore.onTopLoaded(id)
       }).catch(err => Toast(err))
     },
     /**
@@ -152,7 +172,7 @@ export default {
     loadBottom(id) {
       //推荐
       if(this.type === 0){
-        api.fetchNewsListByCategory(this.page.current, this.page.size, type).then(data => {
+        api.fetchNewsListByCategory(this.page.current, this.page.size, 1).then(data => {
           const list = JSON.parse(data.data)
           if(list.length === 0){
             this.allLoaded = true  // 若数据已全部获取完毕
@@ -160,13 +180,13 @@ export default {
           list.forEach(item => {
             this.newsList.push(item)
           })
-          this.loadCurren++
+          this.page.current++
           this.$refs.loadmore.onBottomLoaded(id)
         }).catch(err => Toast(err))
         return false
       }
       //分类
-      api.fetchNewsListByType(this.page.current, this.page.size, type).then(data => {
+      api.fetchNewsListByType(this.page.current, this.page.size, this.type).then(data => {
         const list = JSON.parse(data.data)
         if(list.length === 0){
           this.allLoaded = true  // 若数据已全部获取完毕
@@ -183,11 +203,8 @@ export default {
         Toast('请输入查询内容！')
         return false
       }
-      api.fetchNewsListByKeyword(0, this.page.size, keyword).then(data => {
-        this.searchPopup = false
-        this.isSearch = true
-        this.newsList = JSON.parse(data.data)
-      }).catch(err => Toast(err))
+      keyword = encodeURI(encodeURI(keyword))
+      this.$router.push({path: `/NewsResult/${keyword}`})
     },
     /**
      * 查看新闻详情
@@ -196,10 +213,30 @@ export default {
      */
     newsView(id){
       this.$router.push({path: '/NewsView/' +  id})
+    },
+    swipe(evt){
+      // debugger
+      if(evt.direction === 'Left'){
+        if(this.tabActive < this.newsTabsLength - 1){
+           $('.list').addClass('aniSlideIn')
+           this.tabActive ++
+           this.type ++
+           this.tabSwitch(this.tabActive, this.type)
+        }
+      }
+      if(evt.direction === 'Right'){
+        if(this.tabActive > 0){
+           this.tabActive --
+           this.type --
+           this.tabSwitch(this.tabActive, this.type)
+           $('.list').addClass('aniSlideOut')
+        }
+      }
+
+      setTimeout(() => {
+        $('.list').removeClass('aniSlideIn aniSlideOut')
+      }, 300)
     }
   },
 };
 </script>
-
-<style lang="less">
-</style>
